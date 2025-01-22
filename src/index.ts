@@ -1,7 +1,17 @@
 import { Elysia } from "elysia";
+import { db } from './db';
+import { users } from './db/schema';
 
-const app = new Elysia().get("/", () => "Hello Elysia").listen(3000);
+export const app = new Elysia()
+  .get("/", () => "Hello Elysia")
+  .get("/users", async () => {
+    const allUsers = await db.select().from(users);
+    return allUsers;
+  });
 
-console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-);
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(3000);
+  console.log(
+    `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+  );
+}

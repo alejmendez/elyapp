@@ -2,14 +2,24 @@
   "name": "elyapp",
   "version": "1.0.50",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "test": "NODE_ENV=test bun test src/__tests__",
+    "test:watch": "NODE_ENV=test bun test --watch src/__tests__",
+    "dev": "bun run --watch src/index.ts",
+    "migrate:test": "NODE_ENV=test drizzle-kit migrate",
+    "migrate": "drizzle-kit migrate",
+    "migrate:down": "drizzle-kit migrate:down",
+    "generate": "drizzle-kit generate"
   },
   "dependencies": {
-    "elysia": "latest"
+    "drizzle-orm": "^0.38.4",
+    "elysia": "latest",
+    "postgres": "^3.4.5"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "@types/bun": "^1.1.17",
+    "@types/pg": "^8.11.10",
+    "bun-types": "latest",
+    "drizzle-kit": "^0.30.2"
   },
   "module": "src/index.js"
 }
