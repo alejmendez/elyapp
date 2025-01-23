@@ -2,8 +2,8 @@
   "name": "elyapp",
   "version": "1.0.50",
   "scripts": {
-    "test": "NODE_ENV=test bun test src/__tests__",
-    "test:watch": "NODE_ENV=test bun test --watch src/__tests__",
+    "test": "NODE_ENV=test bun test src/__tests__/*.test.ts --preload ./src/__tests__/setup.ts",
+    "test:watch": "NODE_ENV=test bun test --watch src/__tests__/*.test.ts --preload ./src/__tests__/setup.ts",
     "dev": "bun run --watch src/index.ts",
     "migrate:test": "NODE_ENV=test drizzle-kit migrate",
     "migrate": "drizzle-kit migrate",
