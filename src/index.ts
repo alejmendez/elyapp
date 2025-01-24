@@ -1,5 +1,5 @@
 import { Elysia } from "elysia";
-import { userRoutes } from "./routes/user.routes";
+import { userRoutes } from "./packs/users/routes/user";
 
 const app = new Elysia().use(userRoutes);
 

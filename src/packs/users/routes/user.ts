@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
 import { CreateUserDTO, IdParamDTO, UpdateUserDTO } from "../dtos/user.dto";
-import { userService } from '../services/user.service';
+import { userService } from '../services/user';
 
 export const userRoutes = new Elysia({ prefix: '/api/v1/users' })
   .get("/", async () => {

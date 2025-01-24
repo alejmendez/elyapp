@@ -1,7 +1,7 @@
-import { db } from '../db';
-import { users } from '../db/schema';
+import { db } from '../../../db';
+import { users } from '../models/user';
 import { eq } from 'drizzle-orm';
-import type { User } from '../db/schema';
+import type { User } from '../models/user';
 
 type CreateUserData = Pick<User, 'full_name' | 'email' | 'password'>;
 type UpdateUserData = Partial<CreateUserData>;
