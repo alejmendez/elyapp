@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
-import { db } from '../db';
-import { User, users } from '../db/schema';
-import { createUser } from "./factory";
+import { db } from '@db/index';
+import { User, users } from '@db/schema';
+import { createUser } from "@tests/factory";
 import { fetchApi, fetchApiDelete, fetchApiPost, fetchApiPut } from "./helpers";
 
 describe('User API', () => {

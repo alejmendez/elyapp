@@ -1,15 +1,14 @@
-import { db } from '../../../db';
-import { users } from '../models/user';
+import { db } from '@db/index';
+import { users, User } from '@users/models/user';
 import { eq } from 'drizzle-orm';
-import type { User } from '../models/user';
 
 type CreateUserData = Pick<User, 'full_name' | 'email' | 'password'>;
 type UpdateUserData = Partial<CreateUserData>;
 
-export class UserService {
+export const userService = {
   async findAll(): Promise<User[]> {
     return await db.select().from(users);
-  }
+  },
 
   async findById(id: string): Promise<User> {
     const user = await db.select().from(users).where(eq(users.id, id));
@@ -17,12 +16,12 @@ export class UserService {
       throw new Error("Usuario no encontrado");
     }
     return user[0];
-  }
+  },
 
   async create(data: CreateUserData): Promise<User> {
     const [user] = await db.insert(users).values(data).returning();
     return user;
-  }
+  },
 
   async update(id: string, data: UpdateUserData): Promise<User> {
     const updatedUser = await db
@@ -35,7 +34,7 @@ export class UserService {
       throw new Error("Usuario no encontrado");
     }
     return updatedUser[0];
-  }
+  },
 
   async delete(id: string): Promise<void> {
     const deletedUser = await db
@@ -47,6 +46,4 @@ export class UserService {
       throw new Error("Usuario no encontrado");
     }
   }
-}
-
-export const userService = new UserService();
+};

@@ -1,3 +1,3 @@
-import { users } from '../packs/users/models/user';
+import { users } from '@users/models/user';
 
 export { users };
