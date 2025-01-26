@@ -1,6 +1,5 @@
-import { db } from "../db";
-import { users } from "../db/schema";
-import type { User } from "../db/schema";
+import { db } from "@core/db";
+import { users, User } from '@users/models/user';
 
 export async function createUser(override: Partial<User> = {}): Promise<User> {
   const [user] = await db.insert(users).values({

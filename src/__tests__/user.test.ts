@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
-import { db } from '@db/index';
-import { User, users } from '@db/schema';
+import { db } from "@core/db";
+import { User, users } from '@users/models/user';
 import { createUser } from "@tests/factory";
 import { fetchApi, fetchApiDelete, fetchApiPost, fetchApiPut } from "./helpers";
 

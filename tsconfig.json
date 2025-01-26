@@ -31,7 +31,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@db/*": ["src/db/*"],
+      "@db/*": ["src/packs/core/db/*"],
       "@packs/*": ["src/packs/*"],
       "@core/*": ["src/packs/core/*"],
       "@users/*": ["src/packs/users/*"],

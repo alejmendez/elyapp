@@ -3,7 +3,7 @@ import type { Config } from 'drizzle-kit';
 const isTest = process.env.NODE_ENV === 'test';
 
 export default {
-  schema: './src/db/schema.ts',
+  schema: './src/packs/core/db/schema.ts',
   out: './drizzle',
   dialect: 'postgresql',
   dbCredentials: {

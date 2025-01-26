@@ -1,4 +1,4 @@
-import { db } from '@db/index';
+import { db } from "@core/db";
 import { users, User } from '@users/models/user';
 import { eq } from 'drizzle-orm';
 
