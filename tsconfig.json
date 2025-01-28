@@ -35,6 +35,7 @@
       "@packs/*": ["src/packs/*"],
       "@core/*": ["src/packs/core/*"],
       "@users/*": ["src/packs/users/*"],
+      "@auth/*": ["src/packs/auth/*"],
       "@tests/*": ["src/__tests__/*"]
     },
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */

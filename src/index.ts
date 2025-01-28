@@ -1,12 +1,32 @@
 import { Elysia } from "elysia";
-import { userRoutes } from "@packs/users/routes/user";
+import { userRoutes } from "@users/routes/user";
+import { authRoutes } from "@auth/routes/auth";
+import { HttpError } from "@core/errors/http.error";
 
-const app = new Elysia().use(userRoutes);
+export const app = new Elysia()
+  .onError(({ error, set }) => {
+    if (error instanceof HttpError) {
+      set.status = error.statusCode;
+      return {
+        error: error.message,
+        status: error.statusCode
+      };
+    }
 
-export default app;
+    set.status = 500;
+    return {
+      error: 'Internal Server Error',
+      status: 500
+    };
+  })
+  .group("/api/v1", app => app
+    .use(userRoutes)
+    .use(authRoutes)
+  );
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(3000);
+  const port = Number(process.env.APP_PORT || 4000);
+  app.listen(port);
   console.log(
     `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
   );

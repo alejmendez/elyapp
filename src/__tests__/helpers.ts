@@ -1,12 +1,12 @@
-import app from "../index";
+import { app } from "../index";
 
-const baseUrl = 'http://localhost:3000/api/v1/';
+const baseUrl = process.env.APP_URL || 'http://localhost:4000/api/v1/';
 
 let isAppRunning = false;
 
 export function runApp() {
   if (!isAppRunning) {
-    app.listen(3000);
+    app.listen(Number(process.env.APP_PORT || 4000));
     isAppRunning = true;
   }
 }
