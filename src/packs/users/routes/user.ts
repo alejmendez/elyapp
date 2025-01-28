@@ -3,7 +3,7 @@ import { IdParamDTO } from "@core/dtos/generics";
 import { CreateUserDTO, UpdateUserDTO } from "@users/dtos/user";
 import { userService } from '@users/services/user';
 
-export const userRoutes = new Elysia({ prefix: '/api/v1/users' })
+export const userRoutes = new Elysia({ prefix: '/users' })
   .get("/", async () => {
     return await userService.findAll();
   })

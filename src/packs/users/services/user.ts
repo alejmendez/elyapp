@@ -1,9 +1,13 @@
 import { db } from "@core/db";
 import { users, User } from '@users/models/user';
 import { eq } from 'drizzle-orm';
+import { hash } from 'bcrypt';
+import { NotFoundError } from "@core/errors/http.error";
 
 type CreateUserData = Pick<User, 'full_name' | 'email' | 'password'>;
 type UpdateUserData = Partial<CreateUserData>;
+
+const SALT_ROUNDS = 10;
 
 export const userService = {
   async findAll(): Promise<User[]> {
@@ -13,13 +17,16 @@ export const userService = {
   async findById(id: string): Promise<User> {
     const user = await db.select().from(users).where(eq(users.id, id));
     if (user.length === 0) {
-      throw new Error("Usuario no encontrado");
+      throw new NotFoundError("Usuario no encontrado");
     }
     return user[0];
   },
 
   async create(data: CreateUserData): Promise<User> {
-    const [user] = await db.insert(users).values(data).returning();
+    const hashedPassword = await hash(data.password, SALT_ROUNDS);
+    const [user] = await db.insert(users)
+      .values({ ...data, password: hashedPassword })
+      .returning();
     return user;
   },
 
@@ -31,7 +38,7 @@ export const userService = {
       .returning();
 
     if (updatedUser.length === 0) {
-      throw new Error("Usuario no encontrado");
+      throw new NotFoundError("Usuario no encontrado");
     }
     return updatedUser[0];
   },
@@ -43,7 +50,7 @@ export const userService = {
       .returning();
 
     if (deletedUser.length === 0) {
-      throw new Error("Usuario no encontrado");
+      throw new NotFoundError("Usuario no encontrado");
     }
   }
 };
