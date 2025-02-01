@@ -3,11 +3,12 @@ import { users, User } from '@users/models/user';
 import { eq } from 'drizzle-orm';
 import { hash } from 'bcrypt';
 import { NotFoundError } from "@core/errors/http.error";
+import { sessions } from "@/packs/auth/models/session";
 
 type CreateUserData = Pick<User, 'full_name' | 'email' | 'password'>;
 type UpdateUserData = Partial<CreateUserData>;
 
-const SALT_ROUNDS = 10;
+export const SALT_ROUNDS = 10;
 
 export const userService = {
   async findAll(): Promise<User[]> {
@@ -44,6 +45,8 @@ export const userService = {
   },
 
   async delete(id: string): Promise<void> {
+    await db.delete(sessions).where(eq(sessions.userId, id)).execute();
+
     const deletedUser = await db
       .delete(users)
       .where(eq(users.id, id))

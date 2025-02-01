@@ -1,4 +1,7 @@
 import { t } from "elysia";
+import { IdParamDTO } from "@core/dtos/generics";
+
+export { IdParamDTO };
 
 export const CreateUserDTO = t.Object({
   full_name: t.String({ minLength: 3, maxLength: 80 }),

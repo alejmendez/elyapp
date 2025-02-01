@@ -11,6 +11,10 @@
     "generate": "drizzle-kit generate"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.2.0",
+    "@oslojs/crypto": "^1.0.1",
+    "@oslojs/encoding": "^1.1.0",
+    "@tqman/nice-logger": "^1.1.1",
     "bcrypt": "^5.1.1",
     "drizzle-orm": "^0.38.4",
     "elysia": "latest",

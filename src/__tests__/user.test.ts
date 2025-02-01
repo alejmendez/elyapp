@@ -2,21 +2,33 @@ import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { db } from "@core/db";
 import { User, users } from '@users/models/user';
 import { createUser } from "@tests/factory";
-import { fetchApi, fetchApiDelete, fetchApiPost, fetchApiPut } from "./helpers";
+import { authorizeUser, fetchApi, fetchApiDelete, fetchApiPost, fetchApiPut } from "./helpers";
+import { authService } from "@auth/services/auth";
+import { sessions } from "@/packs/auth/models/session";
 
 describe('User API', () => {
   let testUser: User;
+  let auth: { user: User; token: string };
 
   beforeAll(async () => {
+    await db.delete(sessions).execute();
     await db.delete(users).execute();
     testUser = await createUser({
       full_name: 'alejmendez',
       email: 'alejmendez@gmail.com',
       password: 'password123',
     });
+
+    auth = await authService.login({
+      email: testUser.email,
+      password: 'password123'
+    });
+
+    authorizeUser(auth.token);
   });
 
   afterAll(async () => {
+    await db.delete(sessions).execute();
     await db.delete(users).execute();
   });
 
@@ -45,7 +57,6 @@ describe('User API', () => {
     };
 
     const response = await fetchApiPost('users', newUser);
-
     const user = await response.json();
 
     expect(response.status).toBe(200);
@@ -66,7 +77,6 @@ describe('User API', () => {
     };
 
     const response = await fetchApiPut(`users/${newUser.id}`, updatedUser);
-
     const user = await response.json();
 
     expect(response.status).toBe(200);
@@ -85,5 +95,17 @@ describe('User API', () => {
 
     expect(response.status).toBe(200);
     expect(response.statusText).toBe('OK');
+  });
+
+  test('GET /api/v1/users fails without token', async () => {
+    const response = await fetchApi('users', {
+      headers: {
+        authorization: '',
+      }
+    });
+    const error = await response.json();
+
+    expect(response.status).toBe(401);
+    expect(error.error).toBe('Sesión inválida o expirada');
   });
 });

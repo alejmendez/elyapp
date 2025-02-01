@@ -3,6 +3,7 @@ import { app } from "../index";
 const baseUrl = process.env.APP_URL || 'http://localhost:4000/api/v1/';
 
 let isAppRunning = false;
+let authToken: string = '';
 
 export function runApp() {
   if (!isAppRunning) {
@@ -18,7 +19,18 @@ export async function stopApp() {
   }
 }
 
-export const fetchApi = async (url: string, options: RequestInit = {}) => await fetch(baseUrl + url, options);
+export const authorizeUser = (token: string) => {
+  authToken = token;
+};
+
+export const fetchApi = async (url: string, options: RequestInit = {}) => await fetch(baseUrl + url, {
+  ...options,
+  headers: {
+    authorization: authToken,
+    ...options.headers,
+  }
+});
+
 export const fetchApiPost = async (url: string, body: any, options: RequestInit = {}) => await fetchApi(url, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
