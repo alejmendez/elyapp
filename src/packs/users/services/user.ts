@@ -1,14 +1,10 @@
 import { db } from "@core/db";
 import { users, User } from '@users/models/user';
 import { eq } from 'drizzle-orm';
-import { hash } from 'bcrypt';
 import { NotFoundError } from "@core/errors/http.error";
 import { sessions } from "@/packs/auth/models/session";
-
-type CreateUserData = Pick<User, 'full_name' | 'email' | 'password'>;
-type UpdateUserData = Partial<CreateUserData>;
-
-export const SALT_ROUNDS = 10;
+import { CreateUser, UpdateUser } from '@/packs/users/validations/user';
+import { Static } from "elysia";
 
 export const userService = {
   async findAll(): Promise<User[]> {
@@ -23,15 +19,15 @@ export const userService = {
     return user[0];
   },
 
-  async create(data: CreateUserData): Promise<User> {
-    const hashedPassword = await hash(data.password, SALT_ROUNDS);
+  async create(data: Static<typeof CreateUser>): Promise<User> {
+    const hashedPassword = await Bun.password.hash(data.password);
     const [user] = await db.insert(users)
       .values({ ...data, password: hashedPassword })
       .returning();
     return user;
   },
 
-  async update(id: string, data: UpdateUserData): Promise<User> {
+  async update(id: string, data: Static<typeof UpdateUser>): Promise<User> {
     const updatedUser = await db
       .update(users)
       .set({ ...data, updated_at: new Date() })

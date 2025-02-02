@@ -96,7 +96,7 @@
         },
         "password": {
           "name": "password",
-          "type": "varchar(60)",
+          "type": "varchar(150)",
           "primaryKey": false,
           "notNull": true
         },

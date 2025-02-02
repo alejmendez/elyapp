@@ -8,20 +8,20 @@
     "migrate:test": "NODE_ENV=test drizzle-kit migrate",
     "migrate": "drizzle-kit migrate",
     "migrate:down": "drizzle-kit migrate:down",
-    "generate": "drizzle-kit generate"
+    "generate": "drizzle-kit generate",
+    "create-user": "bun run src/scripts/create-user.ts"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.2.0",
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/encoding": "^1.1.0",
     "@tqman/nice-logger": "^1.1.1",
-    "bcrypt": "^5.1.1",
-    "drizzle-orm": "^0.38.4",
+    "drizzle-orm": "^0.39.1",
+    "drizzle-typebox": "^0.3.0",
     "elysia": "latest",
     "postgres": "^3.4.5"
   },
   "devDependencies": {
-    "@types/bcrypt": "^5.0.2",
     "@types/bun": "^1.1.17",
     "@types/pg": "^8.11.10",
     "bun-types": "latest",

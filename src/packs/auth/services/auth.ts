@@ -1,5 +1,4 @@
 import { encodeBase32LowerCaseNoPadding } from "@oslojs/encoding";
-import { compare } from "bcrypt";
 import { eq } from 'drizzle-orm';
 
 import { db } from "@core/db";
@@ -8,11 +7,13 @@ import { sessions } from '@auth/models/session';
 import { userService } from '@users/services/user';
 import { sessionService } from '@auth/services/session';
 import { UnauthorizedError } from "@core/errors/http.error";
+import { Login } from "@auth/validations/auth";
+import { Static } from "elysia";
 
 const SESSION_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 30;
 
 export const authService = {
-  async login({ email, password }: { email: string; password: string }): Promise<{ user: User; token: string }> {
+  async login({ email, password }: Static<typeof Login>): Promise<{ user: User; token: string }> {
     const userList = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
     if (!userList.length) {
@@ -20,7 +21,7 @@ export const authService = {
     }
 
     const user = userList[0];
-    const isValid = await compare(password, user.password);
+    const isValid = await Bun.password.verify(password, user.password);
 
     if (!isValid) {
       throw new UnauthorizedError('Credenciales inválidas');
