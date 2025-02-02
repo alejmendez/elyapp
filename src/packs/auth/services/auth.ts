@@ -2,7 +2,7 @@ import { encodeBase32LowerCaseNoPadding } from "@oslojs/encoding";
 import { eq } from 'drizzle-orm';
 
 import { db } from "@core/db";
-import { users, User } from '@users/models/user';
+import { users, User, UserWithoutPassword } from '@users/models/user';
 import { sessions } from '@auth/models/session';
 import { userService } from '@users/services/user';
 import { sessionService } from '@auth/services/session';
@@ -13,7 +13,7 @@ import { Static } from "elysia";
 const SESSION_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 30;
 
 export const authService = {
-  async login({ email, password }: Static<typeof Login>): Promise<{ user: Omit<User, 'password'>; token: string }> {
+  async login({ email, password }: Static<typeof Login>): Promise<{ user: UserWithoutPassword; token: string }> {
     const userList = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
     if (!userList.length) {
@@ -39,7 +39,7 @@ export const authService = {
     };
   },
 
-  async validateToken(token: string): Promise<Omit<User, 'password'>> {
+  async validateToken(token: string): Promise<UserWithoutPassword> {
     const session = await sessionService.findByToken(token);
 
     if (!session || session.expires_at < new Date()) {

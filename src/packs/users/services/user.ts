@@ -1,5 +1,5 @@
 import { db } from "@core/db";
-import { users, User } from '@users/models/user';
+import { users, User, UserWithoutPassword } from '@users/models/user';
 import { eq } from 'drizzle-orm';
 import { NotFoundError } from "@core/errors/http.error";
 import { sessions } from "@/packs/auth/models/session";
@@ -7,12 +7,12 @@ import { CreateUser, UpdateUser } from '@/packs/users/validations/user';
 import { Static } from "elysia";
 
 export const userService = {
-  async findAll(): Promise<Omit<User, 'password'>[]> {
+  async findAll(): Promise<UserWithoutPassword[]> {
     const usersList = await db.select().from(users);
     return usersList.map((user) => this.getUserWithoutPassword(user));
   },
 
-  async findById(id: string): Promise<Omit<User, 'password'>> {
+  async findById(id: string): Promise<UserWithoutPassword> {
     const user = await db.select().from(users).where(eq(users.id, id));
     if (user.length === 0) {
       throw new NotFoundError("Usuario no encontrado");
@@ -20,7 +20,7 @@ export const userService = {
     return this.getUserWithoutPassword(user[0]);
   },
 
-  async create(data: Static<typeof CreateUser>): Promise<Omit<User, 'password'>> {
+  async create(data: Static<typeof CreateUser>): Promise<UserWithoutPassword> {
     const hashedPassword = await Bun.password.hash(data.password);
     const [user] = await db.insert(users)
       .values({ ...data, password: hashedPassword })
@@ -28,7 +28,7 @@ export const userService = {
     return this.getUserWithoutPassword(user);
   },
 
-  async update(id: string, data: Static<typeof UpdateUser>): Promise<Omit<User, 'password'>> {
+  async update(id: string, data: Static<typeof UpdateUser>): Promise<UserWithoutPassword> {
     const updatedUser = await db
       .update(users)
       .set({ ...data, updated_at: new Date() })
@@ -54,7 +54,7 @@ export const userService = {
     }
   },
 
-  getUserWithoutPassword(user: User): Omit<User, 'password'> {
+  getUserWithoutPassword(user: User): UserWithoutPassword {
     const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
