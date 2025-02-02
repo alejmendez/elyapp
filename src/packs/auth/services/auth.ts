@@ -13,7 +13,7 @@ import { Static } from "elysia";
 const SESSION_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 30;
 
 export const authService = {
-  async login({ email, password }: Static<typeof Login>): Promise<{ user: User; token: string }> {
+  async login({ email, password }: Static<typeof Login>): Promise<{ user: Omit<User, 'password'>; token: string }> {
     const userList = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
     if (!userList.length) {
@@ -31,10 +31,15 @@ export const authService = {
 
     await authService.createSession(token, user.id);
 
-    return { user: user, token };
+    const userWithoutPassword = userService.getUserWithoutPassword(user);
+
+    return {
+      user: userWithoutPassword,
+      token
+    };
   },
 
-  async validateToken(token: string): Promise<User> {
+  async validateToken(token: string): Promise<Omit<User, 'password'>> {
     const session = await sessionService.findByToken(token);
 
     if (!session || session.expires_at < new Date()) {
